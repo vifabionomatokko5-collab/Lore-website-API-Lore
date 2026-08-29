@@ -175,7 +175,7 @@
     "use strict";
 
     const API_BASE = "https://api-lore-bot-website.onrender.com/api/v1/guilds";
-    const DISCORD_ID_RE = /^\\d{17,20}$/;
+    const DISCORD_ID_RE = /^\d{17,20}$/;
     const state = { guildId: null, mode: "normal", channelsLoaded: false };
 
     const $ = (id) => document.getElementById(id);
@@ -192,7 +192,23 @@
 
     function getGuildId() {
       const params = new URLSearchParams(window.location.search);
-      return params.get("guild") || params.get("guildId") || params.get("server") || "";
+
+      const candidates = [
+        params.get("guild"),
+        params.get("guildId"),
+        params.get("server"),
+        params.get("id")
+      ];
+
+      for (const value of candidates) {
+        const id = String(value || "").trim();
+
+        if (/^\d{17,20}$/.test(id)) {
+          return id;
+        }
+      }
+
+      return "";
     }
 
     function showStatus(type, message) {
