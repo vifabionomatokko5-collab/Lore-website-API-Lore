@@ -181,7 +181,7 @@
                 👋 Boas-vindas
             </a>
 
-            <a class="nav-item">
+            <a class="nav-item" id="autoroleNav">
                 🤖 AutoRole
             </a>
 
@@ -254,7 +254,7 @@
                         receberão automaticamente.
                     </p>
 
-                    <button class="button">
+                    <button class="button" id="autoroleConfigButton">
                         Configurar
                     </button>
                 </div>
@@ -333,11 +333,21 @@
         "/pages/boas-vindas.html?guild=" +
         encodeURIComponent(guildId);
 
+    const autoroleUrl =
+        "/pages/autorole.html?guild=" +
+        encodeURIComponent(guildId);
+
     const welcomeButton =
         document.getElementById("welcomeConfigButton");
 
     const welcomeNav =
         document.getElementById("welcomeNav");
+
+    const autoroleButton =
+        document.getElementById("autoroleConfigButton");
+
+    const autoroleNav =
+        document.getElementById("autoroleNav");
 
     if (welcomeButton) {
         welcomeButton.addEventListener("click", function () {
@@ -348,6 +358,17 @@
     if (welcomeNav) {
         welcomeNav.href = welcomeUrl;
         welcomeNav.style.cursor = "pointer";
+    }
+
+    if (autoroleButton) {
+        autoroleButton.addEventListener("click", function () {
+            window.location.href = autoroleUrl;
+        });
+    }
+
+    if (autoroleNav) {
+        autoroleNav.href = autoroleUrl;
+        autoroleNav.style.cursor = "pointer";
     }
 })();
 </script>
