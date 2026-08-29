@@ -1,0 +1,329 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="description" content="Lore — uma bot pública de Discord criada para transformar comunidades.">
+    <title>Lore — Bot Discord</title>
+    <link rel="stylesheet" href="/styles/main.css">
+</head>
+
+<body>
+    <header class="navbar">
+        <a href="/" class="logo">Lore</a>
+        <nav>
+            <a href="/">Início</a>
+            <a href="/comandos">Comandos</a>
+            <a href="/painel">Painel</a>
+            <a href="/auth/discord">Entrar com Discord</a>
+        </nav>
+    </header>
+
+    <main>
+        <section class="hero">
+            <div>
+                <p class="eyebrow">BOT DISCORD</p>
+                <h1>A Lore transforma sua comunidade.</h1>
+                <p class="hero-description">
+                    Uma bot pública para deixar seu servidor mais organizado,
+                    divertido e poderoso.
+                </p>
+
+                <div class="hero-actions">
+                    <a href="#" id="addBotButton" class="button primary">
+                        Adicionar a Lore
+                    </a>
+                    <a href="/painel" class="button secondary">
+                        Abrir painel
+                    </a>
+                </div>
+            </div>
+        </section>
+
+        <section class="stats">
+            <div class="stat-card">
+                <strong id="botStatus">Carregando...</strong>
+                <span>Status da Lore</span>
+                <i id="statusIndicator" class="status-indicator"></i>
+            </div>
+
+            <div class="stat-card">
+                <strong id="serverCount">—</strong>
+                <span>Servidores</span>
+            </div>
+
+            <div class="stat-card">
+                <strong id="commandCount">—</strong>
+                <span>Comandos</span>
+            </div>
+        </section>
+
+        <section class="section">
+            <div class="section-heading">
+                <p class="eyebrow">COMANDOS</p>
+                <h2>O que a Lore pode fazer</h2>
+            </div>
+
+            <div id="commandsList" class="commands-list">
+                <div class="command">
+                    <span>Carregando comandos...</span>
+                </div>
+            </div>
+        </section>
+
+        <section class="section dashboard-card">
+            <div>
+                <p class="eyebrow">PAINEL</p>
+                <h2>Controle seu servidor</h2>
+                <p>
+                    Acesse o painel da Lore para configurar os recursos
+                    do seu servidor Discord.
+                </p>
+            </div>
+
+            <a href="/painel" class="button primary">
+                Acessar painel
+            </a>
+        </section>
+
+        <section class="section">
+            <div class="section-heading">
+                <p class="eyebrow">DISCORD</p>
+                <h2>Pronto para começar?</h2>
+                <p>
+                    Adicione a Lore ao seu servidor e comece a configurar
+                    sua comunidade.
+                </p>
+            </div>
+
+            <a href="#" id="addBotButtonBottom" class="button primary">
+                Adicionar a Lore
+            </a>
+        </section>
+    </main>
+
+    <footer class="footer">
+        <span>© 2026 Lore</span>
+        <span>Bot pública de Discord</span>
+    </footer>
+
+<script>
+    /*
+     * O navegador conversa apenas com o website.
+     * O website conversa com a Lore API no Render.
+     */
+    const API_URL = "/api/lore";
+
+    /*
+     * Será configurado quando terminarmos o convite
+     * definitivo do bot.
+     */
+    const BOT_INVITE_URL = "#";
+
+    const addButtons = [
+        document.getElementById("addBotButton"),
+        document.getElementById("addBotButtonBottom")
+    ];
+
+    addButtons.forEach((button) => {
+        if (!button) return;
+
+        button.addEventListener("click", (event) => {
+            event.preventDefault();
+
+            if (BOT_INVITE_URL !== "#") {
+                window.location.href = BOT_INVITE_URL;
+                return;
+            }
+
+            alert("O convite da Lore será configurado em breve.");
+        });
+    });
+
+    async function loadBotStatus() {
+        const statusElement =
+            document.getElementById("botStatus");
+
+        const indicator =
+            document.getElementById("statusIndicator");
+
+        const serverCount =
+            document.getElementById("serverCount");
+
+        const commandCount =
+            document.getElementById("commandCount");
+
+        try {
+            const response = await fetch(
+                `${API_URL}/bot`,
+                {
+                    method: "GET",
+                    headers: {
+                        Accept: "application/json"
+                    },
+                    cache: "no-store"
+                }
+            );
+
+            if (!response.ok) {
+                throw new Error(`HTTP ${response.status}`);
+            }
+
+            const data = await response.json();
+
+            if (!data.success || !data.bot) {
+                throw new Error("Resposta inválida da API.");
+            }
+
+            const bot = data.bot;
+
+            if (indicator) {
+                indicator.classList.remove("online", "offline");
+            }
+
+            if (bot.online) {
+                if (statusElement) {
+                    statusElement.textContent = "Online";
+                }
+
+                if (indicator) {
+                    indicator.classList.add("online");
+                }
+            } else {
+                if (statusElement) {
+                    statusElement.textContent = "Offline";
+                }
+
+                if (indicator) {
+                    indicator.classList.add("offline");
+                }
+            }
+
+            if (serverCount) {
+                serverCount.textContent =
+                    Number(bot.servers ?? 0).toLocaleString("pt-BR");
+            }
+
+            if (commandCount) {
+                commandCount.textContent =
+                    Number(bot.commands ?? 0).toLocaleString("pt-BR");
+            }
+
+        } catch (error) {
+            console.error(
+                "Erro ao consultar status da Lore:",
+                error
+            );
+
+            if (statusElement) {
+                statusElement.textContent = "Indisponível";
+            }
+
+            if (indicator) {
+                indicator.classList.remove("online");
+                indicator.classList.add("offline");
+            }
+
+            if (serverCount) {
+                serverCount.textContent = "—";
+            }
+
+            if (commandCount) {
+                commandCount.textContent = "—";
+            }
+        }
+    }
+
+    async function loadCommands() {
+        const container =
+            document.getElementById("commandsList");
+
+        if (!container) return;
+
+        try {
+            const response = await fetch(
+                `${API_URL}/commands`,
+                {
+                    method: "GET",
+                    headers: {
+                        Accept: "application/json"
+                    },
+                    cache: "no-store"
+                }
+            );
+
+            if (!response.ok) {
+                throw new Error(`HTTP ${response.status}`);
+            }
+
+            const data = await response.json();
+
+            container.innerHTML = "";
+
+            if (
+                !data.success ||
+                !Array.isArray(data.commands) ||
+                data.commands.length === 0
+            ) {
+                container.innerHTML = `
+                    <div class="command">
+                        <span>Nenhum comando disponível.</span>
+                    </div>
+                `;
+                return;
+            }
+
+            data.commands.slice(0, 6).forEach((command) => {
+                const element =
+                    document.createElement("div");
+
+                element.className = "command";
+
+                element.innerHTML = `
+                    <code>/${escapeHtml(command.name)}</code>
+                    <span>
+                        ${escapeHtml(
+                            command.description || "Sem descrição."
+                        )}
+                    </span>
+                `;
+
+                container.appendChild(element);
+            });
+
+        } catch (error) {
+            console.error(
+                "Erro ao carregar comandos:",
+                error
+            );
+
+            container.innerHTML = `
+                <div class="command">
+                    <code>/help</code>
+                    <span>
+                        Não foi possível carregar os comandos agora.
+                    </span>
+                </div>
+            `;
+        }
+    }
+
+    function escapeHtml(value) {
+        return String(value)
+            .replaceAll("&", "&amp;")
+            .replaceAll("<", "&lt;")
+            .replaceAll(">", "&gt;")
+            .replaceAll('"', "&quot;")
+            .replaceAll("'", "&#039;");
+    }
+
+    document.addEventListener("DOMContentLoaded", () => {
+        loadBotStatus();
+        loadCommands();
+    });
+
+    setInterval(loadBotStatus, 30000);
+    setInterval(loadCommands, 60000);
+</script>
+</body>
+</html>
