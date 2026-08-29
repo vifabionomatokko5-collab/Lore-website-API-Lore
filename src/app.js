@@ -519,6 +519,41 @@ app.get(
     }
 );
 
+
+/*
+ * ========================================
+ * API — SERVIDORES
+ * ========================================
+ */
+
+app.get(
+    "/api/lore/servers",
+    async (req, res) => {
+        try {
+            const data = await loreRequest(
+                "/api/v1/servers"
+            );
+
+            res.json(data);
+        } catch (error) {
+            console.error(
+                "Erro ao consultar servidores:",
+                error.message
+            );
+
+            res.status(error.status || 503).json(
+                error.data || {
+                    success: false,
+                    count: 0,
+                    servers: [],
+                    message:
+                        "Não foi possível obter os servidores."
+                }
+            );
+        }
+    }
+);
+
 /*
  * ========================================
  * API — SERVIDOR
@@ -531,7 +566,7 @@ app.get(
         try {
             const data =
                 await loreRequest(
-                    "/api/v1/server"
+                    "/api/v1/servers"
                 );
 
             res.json(data);
