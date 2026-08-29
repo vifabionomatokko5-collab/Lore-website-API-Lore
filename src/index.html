@@ -10,6 +10,102 @@
 
 <link rel="stylesheet" href="/styles/main.css">
 
+<style>
+    /* ========================================
+       BOTÃO ADICIONAR A LORE
+       ======================================== */
+
+    .add-bot-button {
+        position: relative;
+        overflow: visible;
+
+        display: inline-flex;
+        align-items: center;
+        justify-content: center;
+
+        min-width: 150px;
+        height: 44px;
+
+        isolation: isolate;
+    }
+
+    /* ========================================
+       IMAGEM ESCONDIDA
+       ======================================== */
+
+    .bot-pop-image {
+        position: absolute;
+
+        left: 50%;
+        bottom: 50%;
+
+        width: 44px;
+        height: 44px;
+
+        z-index: -1;
+
+        pointer-events: none;
+
+        opacity: 0;
+
+        transform:
+            translate(-50%, 50%)
+            scale(0.70);
+
+        transition:
+            transform 0.18s cubic-bezier(.2, 1.4, .4, 1),
+            opacity 0.12s ease;
+    }
+
+    .bot-pop-image img {
+        width: 100%;
+        height: 100%;
+
+        display: block;
+
+        object-fit: cover;
+
+        border-radius: 10px;
+    }
+
+    /* ========================================
+       MOUSE
+       ======================================== */
+
+    .add-bot-button:hover .bot-pop-image {
+        opacity: 1;
+
+        transform:
+            translate(-50%, -48px)
+            scale(1);
+    }
+
+    /* ========================================
+       TEXTO
+       ======================================== */
+
+    .add-bot-text {
+        position: relative;
+        z-index: 2;
+    }
+
+    /* ========================================
+       CELULAR / TOUCH
+       ======================================== */
+
+    @media (hover: none) {
+
+        .add-bot-button:active .bot-pop-image {
+            opacity: 1;
+
+            transform:
+                translate(-50%, -48px)
+                scale(1);
+        }
+
+    }
+</style>
+
 </head><body><!-- ========================================
      NAVBAR
      ======================================== -->
@@ -24,14 +120,16 @@
         <a href="/">Início</a>
         <a href="/comandos">Comandos</a>
         <a href="/painel">Painel</a>
-        <a href="/auth/discord">Entrar com Discord</a>
+        <a href="/auth/discord">
+            Entrar com Discord
+        </a>
     </nav>
 
 </header>
 
 
 <!-- ========================================
-     CONTEÚDO PRINCIPAL
+     CONTEÚDO
      ======================================== -->
 
 <main>
@@ -41,8 +139,6 @@
          ======================================== -->
 
     <section class="hero">
-
-        <!-- BANNER DA LORE -->
 
         <div class="hero-banner">
 
@@ -71,12 +167,12 @@
 
 
             <!-- ========================================
-                 BOTÕES
+                 BOTÕES PRINCIPAIS
                  ======================================== -->
 
             <div class="hero-actions">
 
-                <!-- ADICIONAR A LORE -->
+                <!-- ADICIONAR LORE -->
 
                 <a
                     href="https://discord.com/oauth2/authorize?client_id=1513750180225089536&permissions=8&scope=bot%20applications.commands"
@@ -86,7 +182,7 @@
                     rel="noopener noreferrer"
                 >
 
-                    <span class="bot-icon-effect">
+                    <span class="bot-pop-image">
 
                         <img
                             src="/assets/Icone-lore.jpg"
@@ -95,14 +191,14 @@
 
                     </span>
 
-                    <span>
+                    <span class="add-bot-text">
                         Adicionar a Lore
                     </span>
 
                 </a>
 
 
-                <!-- PAINEL -->
+                <!-- ABRIR PAINEL -->
 
                 <a
                     href="/painel"
@@ -242,7 +338,7 @@
 
 
     <!-- ========================================
-         DISCORD / CTA
+         DISCORD
          ======================================== -->
 
     <section class="section">
@@ -275,7 +371,7 @@
             rel="noopener noreferrer"
         >
 
-            <span class="bot-icon-effect">
+            <span class="bot-pop-image">
 
                 <img
                     src="/assets/Icone-lore.jpg"
@@ -284,7 +380,7 @@
 
             </span>
 
-            <span>
+            <span class="add-bot-text">
                 Adicionar a Lore
             </span>
 
@@ -319,15 +415,14 @@
 <script>
 
     /*
-     * O navegador conversa apenas com o website.
-     * O website conversa com a Lore API.
+     * API utilizada pelo website
      */
 
     const API_URL = "/api/lore";
 
 
     /*
-     * Convite oficial da Lore
+     * Convite da Lore
      */
 
     const BOT_INVITE_URL =
@@ -335,7 +430,7 @@
 
 
     /*
-     * Botões de adicionar a Lore
+     * Botões de adicionar
      */
 
     const addButtons = [
@@ -377,11 +472,9 @@
     });
 
 
-    /*
-     * ========================================
-     * STATUS DO BOT
-     * ========================================
-     */
+    /* ========================================
+       STATUS DO BOT
+       ======================================== */
 
     async function loadBotStatus() {
 
@@ -575,11 +668,9 @@
     }
 
 
-    /*
-     * ========================================
-     * COMANDOS
-     * ========================================
-     */
+    /* ========================================
+       COMANDOS
+       ======================================== */
 
     async function loadCommands() {
 
@@ -720,11 +811,9 @@
     }
 
 
-    /*
-     * ========================================
-     * SEGURANÇA HTML
-     * ========================================
-     */
+    /* ========================================
+       PROTEÇÃO CONTRA HTML
+       ======================================== */
 
     function escapeHtml(value) {
 
@@ -758,11 +847,9 @@
     }
 
 
-    /*
-     * ========================================
-     * INICIALIZAÇÃO
-     * ========================================
-     */
+    /* ========================================
+       INICIALIZAÇÃO
+       ======================================== */
 
     document.addEventListener(
         "DOMContentLoaded",
@@ -776,15 +863,14 @@
     );
 
 
-    /*
-     * Atualizações automáticas
-     */
+    /* ========================================
+       ATUALIZAÇÃO AUTOMÁTICA
+       ======================================== */
 
     setInterval(
         loadBotStatus,
         30000
     );
-
 
     setInterval(
         loadCommands,
