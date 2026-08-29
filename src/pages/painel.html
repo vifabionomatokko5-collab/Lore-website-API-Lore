@@ -47,7 +47,7 @@
         <a class="panel-brand" href="/">✦ <span>LORE</span></a>
         <div class="panel-nav-links">
           <a href="/">Início</a>
-          <a href="/pages/comandos.html">Comandos</a>
+          <a href="/servidores">Servidores</a>
           <a href="/pages/painel.html" class="active">Painel</a>
         </div>
       </div>
@@ -325,8 +325,17 @@
           idElement.className = "server-id";
           idElement.textContent = `ID: ${id}`;
 
+          const manageButton = document.createElement("a");
+          manageButton.className = "lore-button lore-button-primary";
+          manageButton.href = `/servidor?id=${encodeURIComponent(id)}`;
+          manageButton.textContent = "⚙️ Gerenciar servidor";
+          manageButton.style.width = "100%";
+          manageButton.style.marginTop = "15px";
+          manageButton.style.boxSizing = "border-box";
+
           card.appendChild(top);
           card.appendChild(idElement);
+          card.appendChild(manageButton);
           fragment.appendChild(card);
         });
 

@@ -1,0 +1,44 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta name="theme-color" content="#7c3aed">
+  <title>Servidores — Lore</title>
+  <link rel="stylesheet" href="/styles/main.css">
+  <style>
+    .servers-page{min-height:100vh;background:radial-gradient(circle at 15% 0%,rgba(124,58,237,.18),transparent 34%),radial-gradient(circle at 90% 15%,rgba(168,85,247,.12),transparent 28%)}
+    .servers-wrap{width:min(1180px,calc(100% - 32px));margin:0 auto;padding:38px 0 70px}
+    .servers-nav{position:sticky;top:0;z-index:10;background:rgba(10,7,18,.82);backdrop-filter:blur(14px);border-bottom:1px solid rgba(168,85,247,.18)}
+    .servers-nav-inner{width:min(1180px,calc(100% - 32px));min-height:68px;margin:auto;display:flex;align-items:center;justify-content:space-between;gap:16px}
+    .brand{color:#fff;text-decoration:none;font-weight:900;letter-spacing:.08em}.brand span{color:#a855f7}
+    .nav-links{display:flex;gap:7px}.nav-links a{color:rgba(255,255,255,.68);text-decoration:none;padding:9px 12px;border-radius:10px}.nav-links a:hover,.nav-links a.active{background:rgba(124,58,237,.18);color:#fff}
+    .hero-row{display:flex;justify-content:space-between;align-items:end;gap:25px;margin-bottom:26px}.eyebrow{margin:0 0 8px;color:#a855f7;font-size:.74rem;font-weight:800;letter-spacing:.16em}.hero-row h1{margin:0;color:#fff;font-size:clamp(2rem,5vw,3rem)}.hero-row p{margin:10px 0 0;color:rgba(255,255,255,.58);max-width:650px;line-height:1.6}
+    .profile-mini{display:flex;align-items:center;gap:11px;padding:8px 12px;border:1px solid rgba(255,255,255,.08);border-radius:14px;background:rgba(20,14,32,.65);color:#fff}.profile-mini img,.profile-mini .fallback{width:34px;height:34px;border-radius:50%;object-fit:cover}.fallback{display:flex;align-items:center;justify-content:center;background:linear-gradient(135deg,#7c3aed,#a855f7);font-weight:800}.profile-mini small{display:block;color:rgba(255,255,255,.45);font-size:.7rem}
+    .toolbar{display:flex;justify-content:space-between;align-items:center;margin-bottom:14px}.toolbar h2{margin:0;color:#fff;font-size:1.2rem}.toolbar span{color:rgba(255,255,255,.48);font-size:.85rem}
+    .servers-grid-modern{display:grid;grid-template-columns:repeat(auto-fit,minmax(280px,1fr));gap:16px}.server-card-modern{padding:20px;border-radius:20px;background:linear-gradient(180deg,rgba(25,18,39,.9),rgba(17,12,27,.9));border:1px solid rgba(168,85,247,.16);box-shadow:0 15px 45px rgba(0,0,0,.16);transition:.2s ease}.server-card-modern:hover{transform:translateY(-3px);border-color:rgba(168,85,247,.4)}
+    .server-card-top{display:flex;gap:14px;align-items:center}.server-icon{width:58px;height:58px;flex:0 0 58px;border-radius:17px;object-fit:cover;background:#241632}.server-icon-fallback{display:flex;align-items:center;justify-content:center;color:#fff;font-weight:900;background:linear-gradient(135deg,#7c3aed,#4c1d95)}.server-card-heading{min-width:0}.server-card-heading h3{margin:0;color:#fff;font-size:1.08rem;overflow-wrap:anywhere}.server-online{display:inline-flex;align-items:center;gap:6px;margin-top:5px;color:#86efac;font-size:.78rem}.server-online i{width:7px;height:7px;border-radius:50%;background:#22c55e;box-shadow:0 0 9px rgba(34,197,94,.6)}
+    .server-meta{display:grid;grid-template-columns:1fr 1fr;gap:10px;margin:18px 0;padding:13px 0;border-top:1px solid rgba(255,255,255,.07);border-bottom:1px solid rgba(255,255,255,.07)}.server-meta span{display:block;color:rgba(255,255,255,.42);font-size:.72rem;margin-bottom:5px}.server-meta strong{color:#fff;font-size:.9rem}.mono{font-family:monospace;overflow-wrap:anywhere;font-size:.72rem!important}
+    .manage-button{display:flex;justify-content:space-between;align-items:center;text-decoration:none;color:#fff;font-weight:800;padding:11px 13px;border-radius:12px;background:linear-gradient(135deg,#7c3aed,#9333ea);box-shadow:0 7px 20px rgba(124,58,237,.22)}.manage-button span{font-size:1.15rem}
+    .state{min-height:42vh;display:flex;align-items:center;justify-content:center;text-align:center}.state-box{width:min(520px,100%);padding:34px 24px;border-radius:20px;background:rgba(20,14,32,.8);border:1px solid rgba(168,85,247,.16)}.state-box h2{color:#fff;margin:0 0 8px}.state-box p{color:rgba(255,255,255,.56);margin:0;line-height:1.55}.spinner{width:40px;height:40px;margin:0 auto 18px;border:4px solid rgba(168,85,247,.2);border-top-color:#a855f7;border-radius:50%;animation:spin .8s linear infinite}@keyframes spin{to{transform:rotate(360deg)}}.hidden{display:none!important}.button{display:inline-flex;margin-top:20px;padding:10px 16px;border-radius:11px;text-decoration:none;color:#fff;font-weight:800;background:linear-gradient(135deg,#7c3aed,#9333ea)}
+    @media(max-width:720px){.hero-row{align-items:flex-start;flex-direction:column}.profile-mini{width:100%}.servers-nav-inner{min-height:62px}.nav-links a{padding:8px 8px;font-size:.84rem}.servers-wrap{width:min(100% - 20px,1180px)}}
+  </style>
+</head>
+<body>
+<div class="servers-page">
+  <nav class="servers-nav"><div class="servers-nav-inner"><a class="brand" href="/">✦ <span>LORE</span></a><div class="nav-links"><a href="/">Início</a><a class="active" href="/servidores">Servidores</a><a href="/painel">Painel</a><a href="/auth/logout">Sair</a></div></div></nav>
+  <main class="servers-wrap">
+    <section id="loading" class="state"><div class="state-box"><div class="spinner"></div><h2>Carregando servidores...</h2><p>Estamos buscando os servidores disponíveis para a Lore.</p></div></section>
+    <section id="login" class="state hidden"><div class="state-box"><h2>Entre para continuar</h2><p>Faça login com sua conta do Discord para acessar seus servidores.</p><a class="button" href="/auth/discord">💜 Entrar com Discord</a></div></section>
+    <section id="content" class="hidden">
+      <div class="hero-row"><div><p class="eyebrow">GERENCIAMENTO</p><h1>Meus servidores</h1><p>Escolha um servidor para abrir o painel de gerenciamento da Lore.</p></div><div class="profile-mini"><div id="profileFallback" class="fallback">L</div><img id="profileAvatar" class="hidden" alt=""><div><strong id="profileName">Usuário</strong><small id="profileId">—</small></div></div></div>
+      <div class="toolbar"><h2>Servidores</h2><span id="serverCount">0 servidores</span></div>
+      <div id="serversGrid" class="servers-grid-modern"></div>
+      <div id="empty" class="state hidden"><div class="state-box"><h2>Nenhum servidor encontrado</h2><p>A Lore ainda não possui servidores disponíveis para mostrar.</p></div></div>
+    </section>
+    <section id="error" class="state hidden"><div class="state-box"><h2>Não foi possível carregar</h2><p id="errorMessage">Ocorreu um erro.</p><button id="retry" class="button" type="button">🔄 Tentar novamente</button></div></section>
+  </main>
+</div>
+<script src="/scripts/servidores.js"></script>
+</body>
+</html>

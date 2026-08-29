@@ -60,6 +60,10 @@ app.use(
  */
 
 app.use(express.static(__dirname));
+app.get("/servidor", (req, res) => {
+    res.sendFile(path.join(__dirname, "pages", "servidor.html"));
+});
+
 
 /*
  * ========================================
@@ -641,6 +645,36 @@ app.get(
                 "pages",
                 "painel.html"
             )
+        );
+    }
+);
+
+/*
+ * ========================================
+ * PÁGINA DE SERVIDORES
+ * ========================================
+ */
+
+app.get(
+    "/servidores",
+    (req, res) => {
+        res.sendFile(
+            path.join(__dirname, "pages", "servidores.html")
+        );
+    }
+);
+
+/*
+ * ========================================
+ * PÁGINA DE SERVIDOR
+ * ========================================
+ */
+
+app.get(
+    "/servidor",
+    (req, res) => {
+        res.sendFile(
+            path.join(__dirname, "pages", "servidor.html")
         );
     }
 );

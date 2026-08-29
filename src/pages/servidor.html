@@ -1,0 +1,351 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+    <title>Servidor • Lore</title>
+
+    <link rel="stylesheet" href="/styles/main.css">
+
+    <style>
+        body {
+            margin: 0;
+            background: #08050d;
+            color: #fff;
+            font-family: Arial, sans-serif;
+        }
+
+        .server-layout {
+            min-height: 100vh;
+            display: flex;
+            flex-direction: column;
+        }
+
+        .server-header {
+            height: 64px;
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            padding: 0 24px;
+            background: rgba(15, 8, 25, .95);
+            border-bottom: 1px solid rgba(168, 85, 247, .2);
+        }
+
+        .brand {
+            color: #b46cff;
+            font-weight: 800;
+            font-size: 20px;
+        }
+
+        .server-name {
+            font-weight: 700;
+        }
+
+        .server-body {
+            display: flex;
+            flex: 1;
+        }
+
+        .sidebar {
+            width: 240px;
+            padding: 20px 12px;
+            background: rgba(13, 8, 20, .96);
+            border-right: 1px solid rgba(168, 85, 247, .15);
+        }
+
+        .sidebar-title {
+            color: #888;
+            font-size: 12px;
+            margin: 12px;
+            text-transform: uppercase;
+        }
+
+        .nav-item {
+            display: block;
+            padding: 12px 14px;
+            margin: 4px 0;
+            border-radius: 10px;
+            color: #bbb;
+            text-decoration: none;
+            cursor: pointer;
+        }
+
+        .nav-item:hover,
+        .nav-item.active {
+            background: rgba(168, 85, 247, .16);
+            color: #fff;
+        }
+
+        .content {
+            flex: 1;
+            padding: 32px;
+            max-width: 1100px;
+        }
+
+        .page-title {
+            font-size: 30px;
+            margin-bottom: 8px;
+        }
+
+        .page-description {
+            color: #999;
+            margin-bottom: 30px;
+        }
+
+        .cards {
+            display: grid;
+            grid-template-columns:
+                repeat(auto-fit, minmax(220px, 1fr));
+            gap: 16px;
+        }
+
+        .card {
+            padding: 22px;
+            border-radius: 16px;
+            background: rgba(20, 14, 32, .8);
+            border: 1px solid rgba(168, 85, 247, .15);
+        }
+
+        .card h3 {
+            margin-top: 0;
+        }
+
+        .card p {
+            color: #999;
+            line-height: 1.5;
+        }
+
+        .button {
+            display: inline-block;
+            padding: 10px 16px;
+            border-radius: 9px;
+            background: #8b35e8;
+            color: white;
+            text-decoration: none;
+            border: 0;
+            cursor: pointer;
+        }
+
+        @media (max-width: 700px) {
+            .server-body {
+                flex-direction: column;
+            }
+
+            .sidebar {
+                width: auto;
+                border-right: 0;
+                border-bottom: 1px solid rgba(168, 85, 247, .15);
+            }
+
+            .content {
+                padding: 20px;
+            }
+        }
+    </style>
+</head>
+
+<body>
+
+<div class="server-layout">
+
+    <header class="server-header">
+        <div class="brand">✦ LORE</div>
+
+        <div class="server-name" id="serverName">
+            Carregando servidor...
+        </div>
+
+        <a href="/painel" class="button">
+            ← Voltar
+        </a>
+    </header>
+
+    <div class="server-body">
+
+        <aside class="sidebar">
+
+            <div class="sidebar-title">
+                Geral
+            </div>
+
+            <a class="nav-item active">
+                🏠 Visão geral
+            </a>
+
+            <div class="sidebar-title">
+                Comunidade
+            </div>
+
+            <a class="nav-item" id="welcomeNav">
+                👋 Boas-vindas
+            </a>
+
+            <a class="nav-item">
+                🤖 AutoRole
+            </a>
+
+            <a class="nav-item">
+                🎭 Cargos
+            </a>
+
+            <div class="sidebar-title">
+                Moderação
+            </div>
+
+            <a class="nav-item">
+                🛡️ Moderação
+            </a>
+
+            <a class="nav-item">
+                📜 Logs
+            </a>
+
+            <div class="sidebar-title">
+                Sistemas
+            </div>
+
+            <a class="nav-item">
+                🎫 Tickets
+            </a>
+
+            <a class="nav-item">
+                🤖 Automação
+            </a>
+
+            <div class="sidebar-title">
+                Configuração
+            </div>
+
+            <a class="nav-item">
+                ⚙️ Configurações
+            </a>
+
+        </aside>
+
+        <main class="content">
+
+            <h1 class="page-title">
+                Visão geral
+            </h1>
+
+            <p class="page-description">
+                Gerencie os recursos da Lore neste servidor.
+            </p>
+
+            <section class="cards">
+
+                <div class="card">
+                    <h3>👋 Boas-vindas</h3>
+                    <p>
+                        Configure mensagens automáticas
+                        para novos membros.
+                    </p>
+
+                    <button class="button" id="welcomeConfigButton">
+                        Configurar
+                    </button>
+                </div>
+
+                <div class="card">
+                    <h3>🤖 AutoRole</h3>
+                    <p>
+                        Escolha os cargos que novos membros
+                        receberão automaticamente.
+                    </p>
+
+                    <button class="button">
+                        Configurar
+                    </button>
+                </div>
+
+                <div class="card">
+                    <h3>🛡️ Moderação</h3>
+                    <p>
+                        Controle ferramentas de proteção
+                        e moderação do servidor.
+                    </p>
+
+                    <button class="button">
+                        Configurar
+                    </button>
+                </div>
+
+                <div class="card">
+                    <h3>📜 Logs</h3>
+                    <p>
+                        Configure onde a Lore enviará
+                        os registros do servidor.
+                    </p>
+
+                    <button class="button">
+                        Configurar
+                    </button>
+                </div>
+
+            </section>
+
+        </main>
+
+    </div>
+
+</div>
+
+<script>
+    const params = new URLSearchParams(
+        window.location.search
+    );
+
+    const serverId = params.get("id");
+
+    if (!serverId) {
+        document.getElementById("serverName").textContent =
+            "Servidor não especificado";
+    }
+
+    console.log(
+        "Servidor selecionado:",
+        serverId
+    );
+</script>
+
+
+<script>
+(function () {
+    const params = new URLSearchParams(window.location.search);
+
+    const guildId =
+        params.get("id") ||
+        params.get("guild") ||
+        params.get("guildId");
+
+    if (!guildId) {
+        console.warn("[LORE] Guild ID não encontrado na URL.");
+        return;
+    }
+
+    const welcomeUrl =
+        "/pages/boas-vindas.html?guild=" +
+        encodeURIComponent(guildId);
+
+    const welcomeButton =
+        document.getElementById("welcomeConfigButton");
+
+    const welcomeNav =
+        document.getElementById("welcomeNav");
+
+    if (welcomeButton) {
+        welcomeButton.addEventListener("click", function () {
+            window.location.href = welcomeUrl;
+        });
+    }
+
+    if (welcomeNav) {
+        welcomeNav.href = welcomeUrl;
+        welcomeNav.style.cursor = "pointer";
+    }
+})();
+</script>
+
+</body>
+</html>
