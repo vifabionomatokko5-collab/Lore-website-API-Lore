@@ -317,7 +317,12 @@
     const guildId =
         params.get("id") ||
         params.get("guild") ||
-        params.get("guildId");
+        params.get("guildId") ||
+        params.get("server");
+
+    if (guildId && !/^\d{17,20}$/.test(String(guildId))) {
+        console.warn("[LORE] Guild ID inválido:", guildId);
+    }
 
     if (!guildId) {
         console.warn("[LORE] Guild ID não encontrado na URL.");
