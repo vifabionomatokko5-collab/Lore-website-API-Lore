@@ -1,0 +1,974 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+  <title>AutoRole — Lore</title>
+
+  <style>
+    * {
+      box-sizing: border-box;
+    }
+
+    body {
+      margin: 0;
+      min-height: 100vh;
+      font-family: Arial, Helvetica, sans-serif;
+      color: #fff;
+      background:
+        radial-gradient(circle at top left, rgba(124,58,237,.25), transparent 35%),
+        radial-gradient(circle at bottom right, rgba(147,51,234,.18), transparent 35%),
+        #0b0710;
+    }
+
+    button,
+    input {
+      font: inherit;
+    }
+
+    .nav {
+      height: 68px;
+      display: flex;
+      align-items: center;
+      border-bottom: 1px solid rgba(255,255,255,.08);
+      background: rgba(10,7,15,.82);
+      backdrop-filter: blur(14px);
+    }
+
+    .nav-inner {
+      width: min(1150px, calc(100% - 32px));
+      margin: auto;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 20px;
+    }
+
+    .brand {
+      color: #fff;
+      text-decoration: none;
+      font-weight: 900;
+      letter-spacing: .08em;
+    }
+
+    .back {
+      color: rgba(255,255,255,.7);
+      text-decoration: none;
+      font-size: .9rem;
+    }
+
+    .back:hover {
+      color: #fff;
+    }
+
+    .container {
+      width: min(100% - 32px, 1000px);
+      margin: 0 auto;
+      padding: 45px 0 70px;
+    }
+
+    .header {
+      margin-bottom: 28px;
+    }
+
+    .header h1 {
+      margin: 0 0 8px;
+      font-size: clamp(2rem, 5vw, 2.8rem);
+    }
+
+    .header p {
+      margin: 0;
+      color: rgba(255,255,255,.58);
+      line-height: 1.6;
+    }
+
+    .card {
+      padding: 25px;
+      margin-bottom: 18px;
+      border: 1px solid rgba(168,85,247,.18);
+      border-radius: 20px;
+      background: rgba(20,14,32,.78);
+      box-shadow: 0 15px 45px rgba(0,0,0,.2);
+    }
+
+    .card h2 {
+      margin: 0 0 7px;
+      font-size: 1.2rem;
+    }
+
+    .card-description {
+      margin: 0 0 22px;
+      color: rgba(255,255,255,.52);
+      font-size: .9rem;
+      line-height: 1.5;
+    }
+
+    .setting-row {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 20px;
+    }
+
+    .setting-title {
+      font-weight: 800;
+      margin-bottom: 5px;
+    }
+
+    .setting-subtitle {
+      color: rgba(255,255,255,.48);
+      font-size: .84rem;
+    }
+
+    .switch {
+      position: relative;
+      width: 54px;
+      height: 30px;
+      flex: 0 0 54px;
+    }
+
+    .switch input {
+      display: none;
+    }
+
+    .slider {
+      position: absolute;
+      inset: 0;
+      cursor: pointer;
+      border-radius: 30px;
+      background: rgba(255,255,255,.12);
+      border: 1px solid rgba(255,255,255,.12);
+      transition: .2s;
+    }
+
+    .slider::before {
+      content: "";
+      position: absolute;
+      width: 22px;
+      height: 22px;
+      left: 3px;
+      top: 3px;
+      border-radius: 50%;
+      background: #fff;
+      transition: .2s;
+    }
+
+    .switch input:checked + .slider {
+      background: linear-gradient(135deg,#7c3aed,#9333ea);
+      border-color: transparent;
+    }
+
+    .switch input:checked + .slider::before {
+      transform: translateX(24px);
+    }
+
+    .toolbar {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 15px;
+      margin-bottom: 18px;
+    }
+
+    .count {
+      color: rgba(255,255,255,.55);
+      font-size: .88rem;
+    }
+
+    .roles {
+      display: grid;
+      grid-template-columns: repeat(auto-fill, minmax(240px, 1fr));
+      gap: 10px;
+    }
+
+    .role {
+      position: relative;
+      display: flex;
+      align-items: center;
+      gap: 12px;
+      padding: 14px;
+      border-radius: 13px;
+      border: 1px solid rgba(255,255,255,.08);
+      background: rgba(0,0,0,.18);
+      cursor: pointer;
+      transition: .2s;
+    }
+
+    .role:hover {
+      border-color: rgba(168,85,247,.45);
+      background: rgba(124,58,237,.08);
+    }
+
+    .role.selected {
+      border-color: rgba(168,85,247,.65);
+      background: rgba(124,58,237,.14);
+    }
+
+    .role input {
+      width: 18px;
+      height: 18px;
+      accent-color: #8b35e8;
+      cursor: pointer;
+      flex: 0 0 auto;
+    }
+
+    .role-info {
+      min-width: 0;
+    }
+
+    .role-name {
+      font-weight: 800;
+      overflow: hidden;
+      text-overflow: ellipsis;
+      white-space: nowrap;
+    }
+
+    .role-id {
+      margin-top: 3px;
+      color: rgba(255,255,255,.35);
+      font-size: .72rem;
+      font-family: monospace;
+      overflow: hidden;
+      text-overflow: ellipsis;
+    }
+
+    .empty {
+      padding: 30px 10px;
+      text-align: center;
+      color: rgba(255,255,255,.45);
+    }
+
+    .actions {
+      display: flex;
+      justify-content: flex-end;
+      gap: 10px;
+      margin-top: 22px;
+    }
+
+    .button {
+      border: 0;
+      cursor: pointer;
+      border-radius: 11px;
+      padding: 11px 18px;
+      color: #fff;
+      font-weight: 800;
+      transition: .2s;
+    }
+
+    .button:hover {
+      transform: translateY(-1px);
+    }
+
+    .button:disabled {
+      opacity: .55;
+      cursor: not-allowed;
+      transform: none;
+    }
+
+    .button-primary {
+      background: linear-gradient(135deg,#7c3aed,#9333ea);
+      box-shadow: 0 8px 25px rgba(124,58,237,.25);
+    }
+
+    .button-secondary {
+      background: rgba(255,255,255,.07);
+      border: 1px solid rgba(255,255,255,.1);
+    }
+
+    .message {
+      display: none;
+      margin-bottom: 18px;
+      padding: 13px 15px;
+      border-radius: 12px;
+      line-height: 1.4;
+      font-size: .9rem;
+    }
+
+    .message.show {
+      display: block;
+    }
+
+    .message.success {
+      color: #bbf7d0;
+      background: rgba(34,197,94,.1);
+      border: 1px solid rgba(34,197,94,.2);
+    }
+
+    .message.error {
+      color: #fecaca;
+      background: rgba(239,68,68,.1);
+      border: 1px solid rgba(239,68,68,.2);
+    }
+
+    .message.loading {
+      color: #ddd6fe;
+      background: rgba(124,58,237,.1);
+      border: 1px solid rgba(124,58,237,.2);
+    }
+
+    .loading {
+      color: rgba(255,255,255,.55);
+      text-align: center;
+      padding: 40px 0;
+    }
+
+    .hidden {
+      display: none !important;
+    }
+
+    @media (max-width: 600px) {
+      .container {
+        width: min(100% - 20px, 1000px);
+        padding-top: 28px;
+      }
+
+      .card {
+        padding: 18px;
+      }
+
+      .setting-row {
+        align-items: flex-start;
+      }
+
+      .toolbar {
+        align-items: flex-start;
+        flex-direction: column;
+      }
+
+      .roles {
+        grid-template-columns: 1fr;
+      }
+
+      .actions {
+        flex-direction: column;
+      }
+
+      .button {
+        width: 100%;
+      }
+    }
+  </style>
+</head>
+
+<body>
+
+<nav class="nav">
+  <div class="nav-inner">
+    <a class="brand" href="/">✦ LORE</a>
+
+    <a class="back" id="backButton" href="/servidor">
+      ← Voltar para o servidor
+    </a>
+  </div>
+</nav>
+
+<main class="container">
+
+  <header class="header">
+    <h1>🤖 AutoRole</h1>
+    <p>
+      Escolha os cargos que a Lore entregará automaticamente
+      quando um novo membro entrar no servidor.
+    </p>
+  </header>
+
+  <div id="message" class="message"></div>
+
+  <section class="card">
+
+    <h2>Ativar AutoRole</h2>
+
+    <p class="card-description">
+      Quando ativado, os cargos selecionados serão atribuídos
+      automaticamente aos novos membros.
+    </p>
+
+    <div class="setting-row">
+      <div>
+        <div class="setting-title">
+          Sistema de AutoRole
+        </div>
+
+        <div class="setting-subtitle" id="statusText">
+          Desativado
+        </div>
+      </div>
+
+      <label class="switch">
+        <input type="checkbox" id="enabled">
+        <span class="slider"></span>
+      </label>
+    </div>
+
+  </section>
+
+  <section class="card">
+
+    <h2>Cargos automáticos</h2>
+
+    <p class="card-description">
+      Selecione até 10 cargos. Eles serão entregues automaticamente
+      aos novos membros.
+    </p>
+
+    <div class="toolbar">
+      <div class="count" id="count">
+        0 de 10 cargos selecionados
+      </div>
+
+      <button
+        type="button"
+        class="button button-secondary"
+        id="reloadButton"
+      >
+        🔄 Recarregar
+      </button>
+    </div>
+
+    <div id="loading" class="loading">
+      Carregando cargos...
+    </div>
+
+    <div id="roles" class="roles hidden"></div>
+
+    <div id="empty" class="empty hidden">
+      Nenhum cargo disponível para este servidor.
+    </div>
+
+    <div class="actions">
+
+      <button
+        type="button"
+        class="button button-secondary"
+        id="cancelButton"
+      >
+        Cancelar
+      </button>
+
+      <button
+        type="button"
+        class="button button-primary"
+        id="saveButton"
+      >
+        💾 Salvar alterações
+      </button>
+
+    </div>
+
+  </section>
+
+</main>
+
+<script>
+(function () {
+  "use strict";
+
+  const API_BASE =
+    "https://api-lore-bot-website.onrender.com/api/v1/guilds";
+
+  const DISCORD_ID_RE = /^\d{17,20}$/;
+
+  const params =
+    new URLSearchParams(window.location.search);
+
+  const candidates = [
+    params.get("guild"),
+    params.get("guildId"),
+    params.get("server"),
+    params.get("id")
+  ];
+
+  let guildId = "";
+
+  for (const value of candidates) {
+    const id = String(value || "").trim();
+
+    if (DISCORD_ID_RE.test(id)) {
+      guildId = id;
+      break;
+    }
+  }
+
+  const enabledEl =
+    document.getElementById("enabled");
+
+  const statusText =
+    document.getElementById("statusText");
+
+  const rolesEl =
+    document.getElementById("roles");
+
+  const loadingEl =
+    document.getElementById("loading");
+
+  const emptyEl =
+    document.getElementById("empty");
+
+  const countEl =
+    document.getElementById("count");
+
+  const messageEl =
+    document.getElementById("message");
+
+  const saveButton =
+    document.getElementById("saveButton");
+
+  const reloadButton =
+    document.getElementById("reloadButton");
+
+  const cancelButton =
+    document.getElementById("cancelButton");
+
+  const backButton =
+    document.getElementById("backButton");
+
+  let roles = [];
+  let selectedRoleIds = new Set();
+
+  function showMessage(text, type) {
+    messageEl.textContent = text;
+    messageEl.className =
+      "message show " + type;
+  }
+
+  function hideMessage() {
+    messageEl.textContent = "";
+    messageEl.className = "message";
+  }
+
+  function updateStatus() {
+    statusText.textContent =
+      enabledEl.checked
+        ? "Ativado"
+        : "Desativado";
+  }
+
+  function updateCount() {
+    countEl.textContent =
+      selectedRoleIds.size +
+      " de 10 cargos selecionados";
+  }
+
+  function setLoading(value) {
+    loadingEl.classList.toggle(
+      "hidden",
+      !value
+    );
+
+    rolesEl.classList.toggle(
+      "hidden",
+      value
+    );
+  }
+
+  function normalizeRoles(data) {
+    if (Array.isArray(data?.roles)) {
+      return data.roles;
+    }
+
+    if (Array.isArray(data?.guild?.roles)) {
+      return data.guild.roles;
+    }
+
+    if (Array.isArray(data?.resources?.roles)) {
+      return data.resources.roles;
+    }
+
+    return [];
+  }
+
+  function normalizeAutorole(data) {
+    const autorole =
+      data?.autorole ||
+      data?.settings?.autorole ||
+      {};
+
+    const roleIds =
+      Array.isArray(autorole.roleIds)
+        ? autorole.roleIds.map(String)
+        : [];
+
+    return {
+      enabled:
+        Boolean(autorole.enabled),
+
+      roleIds
+    };
+  }
+
+  function renderRoles() {
+    rolesEl.innerHTML = "";
+
+    if (!roles.length) {
+      rolesEl.classList.add("hidden");
+      emptyEl.classList.remove("hidden");
+      return;
+    }
+
+    emptyEl.classList.add("hidden");
+    rolesEl.classList.remove("hidden");
+
+    const fragment =
+      document.createDocumentFragment();
+
+    for (const role of roles) {
+      const id =
+        String(role.id || "").trim();
+
+      const name =
+        role.name ||
+        "Cargo sem nome";
+
+      if (!DISCORD_ID_RE.test(id)) {
+        continue;
+      }
+
+      const label =
+        document.createElement("label");
+
+      label.className =
+        "role" +
+        (
+          selectedRoleIds.has(id)
+            ? " selected"
+            : ""
+        );
+
+      const checkbox =
+        document.createElement("input");
+
+      checkbox.type = "checkbox";
+      checkbox.checked =
+        selectedRoleIds.has(id);
+
+      checkbox.disabled =
+        !selectedRoleIds.has(id) &&
+        selectedRoleIds.size >= 10;
+
+      checkbox.addEventListener(
+        "change",
+        function () {
+          if (checkbox.checked) {
+            if (selectedRoleIds.size >= 10) {
+              checkbox.checked = false;
+
+              showMessage(
+                "Você pode selecionar no máximo 10 cargos.",
+                "error"
+              );
+
+              return;
+            }
+
+            selectedRoleIds.add(id);
+            label.classList.add("selected");
+          } else {
+            selectedRoleIds.delete(id);
+            label.classList.remove("selected");
+          }
+
+          updateCount();
+          renderRoles();
+        }
+      );
+
+      const info =
+        document.createElement("div");
+
+      info.className =
+        "role-info";
+
+      const roleName =
+        document.createElement("div");
+
+      roleName.className =
+        "role-name";
+
+      roleName.textContent =
+        name;
+
+      const roleId =
+        document.createElement("div");
+
+      roleId.className =
+        "role-id";
+
+      roleId.textContent =
+        id;
+
+      info.appendChild(roleName);
+      info.appendChild(roleId);
+
+      label.appendChild(checkbox);
+      label.appendChild(info);
+
+      fragment.appendChild(label);
+    }
+
+    rolesEl.appendChild(fragment);
+
+    updateCount();
+  }
+
+  async function requestJson(url, options = {}) {
+    const controller =
+      new AbortController();
+
+    const timer =
+      setTimeout(
+        () => controller.abort(),
+        15000
+      );
+
+    try {
+      const response =
+        await fetch(url, {
+          ...options,
+          signal: controller.signal,
+          headers: {
+            "Accept": "application/json",
+            ...(options.body
+              ? {
+                  "Content-Type":
+                    "application/json"
+                }
+              : {}),
+            ...(options.headers || {})
+          }
+        });
+
+      const text =
+        await response.text();
+
+      let data = null;
+
+      try {
+        data =
+          text
+            ? JSON.parse(text)
+            : null;
+      } catch (_) {
+        data = {
+          raw: text
+        };
+      }
+
+      if (!response.ok) {
+        throw new Error(
+          data?.message ||
+          data?.error ||
+          "A API respondeu com erro " +
+          response.status +
+          "."
+        );
+      }
+
+      return data;
+
+    } finally {
+      clearTimeout(timer);
+    }
+  }
+
+  async function loadConfiguration() {
+    if (!guildId) {
+      showMessage(
+        "URL inválida. Abra esta página com ?guild=, ?guildId= ou ?server= seguido de um ID Discord válido.",
+        "error"
+      );
+
+      saveButton.disabled = true;
+      reloadButton.disabled = true;
+
+      setLoading(false);
+      return;
+    }
+
+    hideMessage();
+
+    setLoading(true);
+
+    saveButton.disabled = true;
+    reloadButton.disabled = true;
+
+    try {
+      const [
+        autoroleData,
+        rolesData
+      ] = await Promise.all([
+        requestJson(
+          API_BASE +
+          "/" +
+          encodeURIComponent(guildId) +
+          "/settings/autorole"
+        ),
+
+        requestJson(
+          API_BASE +
+          "/" +
+          encodeURIComponent(guildId) +
+          "/roles"
+        )
+      ]);
+
+      const autorole =
+        normalizeAutorole(autoroleData);
+
+      enabledEl.checked =
+        autorole.enabled;
+
+      selectedRoleIds =
+        new Set(
+          autorole.roleIds
+        );
+
+      roles =
+        normalizeRoles(rolesData)
+          .filter(role =>
+            DISCORD_ID_RE.test(
+              String(role?.id || "")
+            )
+          )
+          .filter(role =>
+            String(role.name || "")
+              .toLowerCase() !== "@everyone"
+          );
+
+      updateStatus();
+      updateCount();
+      renderRoles();
+
+      showMessage(
+        "Configuração do AutoRole carregada com sucesso.",
+        "success"
+      );
+
+    } catch (error) {
+      roles = [];
+      selectedRoleIds.clear();
+
+      renderRoles();
+
+      showMessage(
+        "Não foi possível carregar o AutoRole: " +
+        error.message,
+        "error"
+      );
+
+    } finally {
+      setLoading(false);
+
+      saveButton.disabled = false;
+      reloadButton.disabled = false;
+    }
+  }
+
+  async function saveConfiguration() {
+    if (!guildId) {
+      showMessage(
+        "Servidor inválido.",
+        "error"
+      );
+      return;
+    }
+
+    if (selectedRoleIds.size > 10) {
+      showMessage(
+        "Você pode selecionar no máximo 10 cargos.",
+        "error"
+      );
+      return;
+    }
+
+    saveButton.disabled = true;
+    reloadButton.disabled = true;
+
+    const original =
+      saveButton.innerHTML;
+
+    saveButton.textContent =
+      "Salvando...";
+
+    showMessage(
+      "Salvando configuração do AutoRole...",
+      "loading"
+    );
+
+    try {
+      await requestJson(
+        API_BASE +
+        "/" +
+        encodeURIComponent(guildId) +
+        "/settings/autorole",
+        {
+          method: "PUT",
+
+          body: JSON.stringify({
+            enabled:
+              enabledEl.checked,
+
+            roleIds:
+              Array.from(
+                selectedRoleIds
+              )
+          })
+        }
+      );
+
+      showMessage(
+        "Configuração do AutoRole salva com sucesso.",
+        "success"
+      );
+
+    } catch (error) {
+      showMessage(
+        "Erro ao salvar AutoRole: " +
+        error.message,
+        "error"
+      );
+
+    } finally {
+      saveButton.disabled = false;
+      reloadButton.disabled = false;
+      saveButton.innerHTML = original;
+    }
+  }
+
+  enabledEl.addEventListener(
+    "change",
+    updateStatus
+  );
+
+  reloadButton.addEventListener(
+    "click",
+    loadConfiguration
+  );
+
+  saveButton.addEventListener(
+    "click",
+    saveConfiguration
+  );
+
+  cancelButton.addEventListener(
+    "click",
+    function () {
+      window.location.href =
+        "/servidor?id=" +
+        encodeURIComponent(guildId);
+    }
+  );
+
+  backButton.href =
+    guildId
+      ? "/servidor?id=" +
+        encodeURIComponent(guildId)
+      : "/servidor";
+
+  loadConfiguration();
+
+})();
+</script>
+
+</body>
+</html>
