@@ -1,0 +1,463 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+  <meta name="theme-color" content="#15111f">
+  <title>LORE • Saída</title>
+  <style>
+    :root{
+      --bg:#0b0910;--bg2:#12101a;--card:rgba(26,22,38,.78);--card2:rgba(36,29,54,.7);
+      --border:rgba(255,255,255,.09);--text:#f5f2ff;--muted:#aaa4ba;--purple:#8b5cf6;
+      --purple2:#a855f7;--success:#31d18a;--danger:#ff6b81;--warning:#f7c948;
+      --shadow:0 18px 60px rgba(0,0,0,.38);
+    }
+    *{box-sizing:border-box}
+    html{scroll-behavior:smooth}
+    body{margin:0;min-height:100vh;color:var(--text);font-family:Inter,ui-sans-serif,system-ui,-apple-system,BlinkMacSystemFont,"Segoe UI",Roboto,Arial,sans-serif;
+      background:
+      radial-gradient(circle at 15% 0%,rgba(139,92,246,.18),transparent 32rem),
+      radial-gradient(circle at 90% 10%,rgba(168,85,247,.12),transparent 26rem),
+      linear-gradient(135deg,var(--bg),var(--bg2));}
+    body:before{content:"";position:fixed;inset:0;pointer-events:none;background-image:linear-gradient(rgba(255,255,255,.018) 1px,transparent 1px),linear-gradient(90deg,rgba(255,255,255,.018) 1px,transparent 1px);background-size:30px 30px;mask-image:linear-gradient(to bottom,black,transparent)}
+    button,input,textarea,select{font:inherit}
+    button{cursor:pointer}
+    .app{width:min(1120px,calc(100% - 32px));margin:0 auto;padding:24px 0 48px}
+    .topbar{display:flex;align-items:center;justify-content:space-between;gap:16px;padding:8px 0 28px}
+    .brand{display:flex;align-items:center;gap:10px;font-weight:900;letter-spacing:.12em;font-size:1.15rem}
+    .brand-mark{width:38px;height:38px;display:grid;place-items:center;border-radius:13px;background:linear-gradient(135deg,var(--purple),var(--purple2));box-shadow:0 10px 30px rgba(139,92,246,.35)}
+    .back-btn,.secondary-btn,.save-btn,.mode-option{border:1px solid var(--border);color:var(--text);transition:.22s ease}
+    .back-btn{background:rgba(255,255,255,.045);padding:11px 15px;border-radius:13px;text-decoration:none;font-weight:700}
+    .back-btn:hover,.secondary-btn:hover{transform:translateY(-2px);background:rgba(255,255,255,.08)}
+    .hero{padding:10px 0 26px}
+    .eyebrow{display:inline-flex;align-items:center;gap:8px;padding:7px 11px;border-radius:999px;background:rgba(139,92,246,.12);border:1px solid rgba(139,92,246,.25);color:#d9c8ff;font-size:.82rem;font-weight:800}
+    h1{font-size:clamp(2rem,6vw,3.25rem);margin:14px 0 9px;letter-spacing:-.045em}
+    .hero p{margin:0;color:var(--muted);font-size:1.02rem;max-width:700px;line-height:1.65}
+    .status{display:none;margin:0 0 18px;padding:14px 16px;border-radius:15px;border:1px solid var(--border);backdrop-filter:blur(14px);font-weight:700}
+    .status.show{display:flex;align-items:center;gap:10px;animation:slideIn .28s ease}
+    .status.loading{background:rgba(139,92,246,.12);border-color:rgba(139,92,246,.28)}
+    .status.success{background:rgba(49,209,138,.1);border-color:rgba(49,209,138,.28);color:#d7ffec}
+    .status.error{background:rgba(255,107,129,.1);border-color:rgba(255,107,129,.3);color:#ffe0e5}
+    @keyframes slideIn{from{opacity:0;transform:translateY(-8px)}to{opacity:1;transform:none}}
+    .layout{display:grid;gap:18px}
+    .card{background:linear-gradient(135deg,var(--card),var(--card2));border:1px solid var(--border);border-radius:24px;padding:22px;box-shadow:var(--shadow);backdrop-filter:blur(18px);-webkit-backdrop-filter:blur(18px);animation:fadeUp .45s both}
+    .card:nth-child(2){animation-delay:.05s}.card:nth-child(3){animation-delay:.1s}
+    @keyframes fadeUp{from{opacity:0;transform:translateY(12px)}to{opacity:1;transform:none}}
+    .card-title{font-size:1.08rem;font-weight:850;margin:0 0 5px}
+    .card-desc{color:var(--muted);margin:0;line-height:1.55;font-size:.93rem}
+    .row{display:flex;align-items:center;justify-content:space-between;gap:20px}
+    .switch{position:relative;display:inline-flex;align-items:center;gap:11px;user-select:none;flex-shrink:0}
+    .switch input{position:absolute;opacity:0;pointer-events:none}
+    .slider{width:54px;height:30px;border-radius:999px;background:#454052;border:1px solid rgba(255,255,255,.1);position:relative;transition:.25s}
+    .slider:after{content:"";position:absolute;width:22px;height:22px;border-radius:50%;left:3px;top:3px;background:#fff;box-shadow:0 2px 8px rgba(0,0,0,.3);transition:.25s}
+    .switch input:checked + .slider{background:linear-gradient(135deg,var(--purple),var(--purple2))}
+    .switch input:checked + .slider:after{transform:translateX(24px)}
+    .switch-text{font-size:.9rem;font-weight:800;color:var(--muted);min-width:78px}
+    .switch input:checked ~ .switch-text{color:#e9e1ff}
+    .mode-grid{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:14px;margin-top:18px}
+    .mode-option{background:rgba(255,255,255,.035);padding:17px;border-radius:18px;text-align:left;position:relative}
+    .mode-option:hover{transform:translateY(-2px);border-color:rgba(168,85,247,.45)}
+    .mode-option.active{background:linear-gradient(135deg,rgba(139,92,246,.24),rgba(168,85,247,.11));border-color:rgba(168,85,247,.72);box-shadow:0 0 0 1px rgba(168,85,247,.16),0 12px 30px rgba(90,45,160,.15)}
+    .mode-icon{font-size:1.35rem}.mode-title{font-weight:900;margin:9px 0 5px}.mode-desc{margin:0;color:var(--muted);font-size:.88rem;line-height:1.45}
+    .check{position:absolute;right:14px;top:14px;width:24px;height:24px;border-radius:50%;display:grid;place-items:center;background:var(--purple);opacity:0;transform:scale(.7);transition:.2s}
+    .active .check{opacity:1;transform:scale(1)}
+    .form-grid{display:grid;grid-template-columns:1fr 1fr;gap:16px;margin-top:18px}
+    .field.full{grid-column:1/-1}.field label{display:block;font-weight:800;margin:0 0 8px;font-size:.93rem}
+    .field-hint{float:right;color:var(--muted);font-size:.78rem;font-weight:650}
+    textarea,select,input[type="text"]{width:100%;border:1px solid var(--border);background:rgba(8,7,13,.5);color:var(--text);border-radius:15px;padding:13px 14px;outline:none;transition:.2s}
+    textarea{resize:vertical;min-height:150px;line-height:1.55}
+    textarea:focus,select:focus,input[type="text"]:focus{border-color:rgba(168,85,247,.75);box-shadow:0 0 0 4px rgba(139,92,246,.13)}
+    select option{background:#18131f;color:#fff}
+    .variables{display:flex;flex-wrap:wrap;gap:9px;margin-top:11px}
+    .variable{border:1px solid rgba(168,85,247,.25);background:rgba(139,92,246,.1);color:#e2d7ff;border-radius:10px;padding:7px 10px;font-size:.84rem;font-family:ui-monospace,SFMono-Regular,Consolas,monospace;font-weight:750}
+    .advanced{display:none;margin-top:18px;padding-top:18px;border-top:1px solid var(--border)}
+    .advanced.show{display:block;animation:fadeUp .25s ease}
+    .advanced-note{color:#d9c8ff;font-size:.88rem;margin:0 0 15px}
+    .actions{display:flex;justify-content:flex-end;gap:12px;margin-top:4px;flex-wrap:wrap}
+    .secondary-btn,.save-btn{border-radius:14px;padding:13px 17px;font-weight:850}
+    .secondary-btn{background:rgba(255,255,255,.055)}
+    .save-btn{background:linear-gradient(135deg,var(--purple),var(--purple2));border-color:transparent;box-shadow:0 10px 25px rgba(139,92,246,.28)}
+    .save-btn:hover{transform:translateY(-2px);filter:brightness(1.08)}
+    .save-btn:disabled,.secondary-btn:disabled{opacity:.58;cursor:not-allowed;transform:none}
+    .guild-note{margin-top:18px;color:var(--muted);font-size:.8rem;word-break:break-all}
+    .empty-select{color:var(--muted)}
+    @media(max-width:700px){.app{width:min(100% - 22px,1120px);padding-top:12px}.topbar{padding-bottom:18px}.back-btn{padding:10px 11px;font-size:.86rem}.card{border-radius:20px;padding:18px}.row{align-items:flex-start}.mode-grid,.form-grid{grid-template-columns:1fr}.field.full{grid-column:auto}.actions{justify-content:stretch}.actions button{flex:1}.switch{margin-top:4px}.hero{padding-bottom:20px}}
+    @media(max-width:430px){.topbar{gap:9px}.brand{font-size:1rem}.back-btn{font-size:0}.back-btn:before{content:"←";font-size:1.15rem}.switch-text{display:none}.hero h1{font-size:2rem}}
+  </style>
+</head>
+<body>
+  <main class="app">
+    <header class="topbar">
+      <div class="brand"><div class="brand-mark">✦</div><span>LORE</span></div>
+      <a id="backButton" class="back-btn" href="/servidor">← Voltar para o servidor</a>
+    </header>
+
+    <section class="hero">
+      <span class="eyebrow">✦ PAINEL DO SERVIDOR</span>
+      <h1>👋 Saída</h1>
+      <p>Configure a mensagem enviada quando um novo membro entrar no servidor.</p>
+    </section>
+
+    <div id="status" class="status" role="status" aria-live="polite"></div>
+
+    <section class="layout">
+      <article class="card">
+        <div class="row">
+          <div>
+            <h2 class="card-title">Ativar saida</h2>
+            <p class="card-desc">Ative para enviar automaticamente uma mensagem quando um novo membro entrar.</p>
+          </div>
+          <label class="switch" aria-label="Ativar ou desativar saida">
+            <input id="enabled" type="checkbox">
+            <span class="slider"></span>
+            <span id="switchText" class="switch-text">Desativado</span>
+          </label>
+        </div>
+      </article>
+
+      <article class="card">
+        <h2 class="card-title">Modo de saida</h2>
+        <p class="card-desc">Escolha como a mensagem será apresentada.</p>
+        <div class="mode-grid" role="radiogroup" aria-label="Modo de saida">
+          <button type="button" id="normalMode" class="mode-option active" data-mode="normal" role="radio" aria-checked="true">
+            <span class="mode-icon">💬</span><div class="mode-title">Modo normal</div>
+            <p class="mode-desc">Envia apenas a mensagem configurada.</p><span class="check">✓</span>
+          </button>
+          <button type="button" id="advancedMode" class="mode-option" data-mode="advanced" role="radio" aria-checked="false">
+            <span class="mode-icon">✨</span><div class="mode-title">Modo avançado</div>
+            <p class="mode-desc">Permite uma apresentação mais completa.</p><span class="check">✓</span>
+          </button>
+        </div>
+      </article>
+
+      <article class="card">
+        <h2 class="card-title">Mensagem</h2>
+        <p class="card-desc">Personalize o texto que será enviado ao novo membro.</p>
+        <div class="form-grid">
+          <div class="field full">
+            <label for="message">Mensagem principal <span id="messageCount" class="field-hint">0/1000</span></label>
+            <textarea id="message" maxlength="1000" placeholder="Olá {user}! Seja bem-vindo(a) ao {server}! 🎉"></textarea>
+            <div class="variables" aria-label="Variáveis disponíveis">
+              <span class="variable">{user}</span><span class="variable">{server}</span><span class="variable">{memberCount}</span>
+            </div>
+          </div>
+          <div class="field full">
+            <label for="channel">Canal de saida</label>
+            <select id="channel"><option value="">Carregando canais...</option></select>
+          </div>
+        </div>
+
+        <div id="advancedFields" class="advanced">
+          <p class="advanced-note">✨ <strong>Modo avançado ativo.</strong> Complete os campos abaixo para uma apresentação mais rica.</p>
+          <div class="form-grid">
+            <div class="field">
+              <label for="advancedTitle">Título da mensagem avançada <span id="titleCount" class="field-hint">0/256</span></label>
+              <input id="advancedTitle" type="text" maxlength="256" placeholder="🎉 Uma nova pessoa chegou!">
+            </div>
+            <div class="field">
+              <label for="advancedFooter">Rodapé <span id="footerCount" class="field-hint">0/512</span></label>
+              <input id="advancedFooter" type="text" maxlength="512" placeholder="Lore • Sistema de saida">
+            </div>
+          </div>
+        </div>
+      </article>
+
+      <div class="actions">
+        <button id="reloadButton" type="button" class="secondary-btn">↻ Recarregar</button>
+        <button id="saveButton" type="button" class="save-btn">💾 Salvar alterações</button>
+      </div>
+    </section>
+    <div id="guildNote" class="guild-note"></div>
+  </main>
+
+  <script>
+  (function () {
+    "use strict";
+
+    const API_BASE = "https://api-lore-bot-website.onrender.com/api/v1/guilds";
+    const DISCORD_ID_RE = /^\d{17,20}$/;
+    const state = { guildId: null, mode: "normal", channelsLoaded: false };
+
+    const $ = (id) => document.getElementById(id);
+    const statusEl = $("status");
+    const enabledEl = $("enabled");
+    const switchTextEl = $("switchText");
+    const messageEl = $("message");
+    const channelEl = $("channel");
+    const advancedFieldsEl = $("advancedFields");
+    const advancedTitleEl = $("advancedTitle");
+    const advancedFooterEl = $("advancedFooter");
+    const saveButton = $("saveButton");
+    const reloadButton = $("reloadButton");
+
+    function getGuildId() {
+      const params = new URLSearchParams(window.location.search);
+
+      const candidates = [
+        params.get("guild"),
+        params.get("guildId"),
+        params.get("server"),
+        params.get("id")
+      ];
+
+      for (const value of candidates) {
+        const id = String(value || "").trim();
+
+        if (/^\d{17,20}$/.test(id)) {
+          return id;
+        }
+      }
+
+      return "";
+    }
+
+    function showStatus(type, message) {
+      statusEl.className = "status show " + type;
+      statusEl.textContent = message;
+    }
+
+    function clearStatus() {
+      statusEl.className = "status";
+      statusEl.textContent = "";
+    }
+
+    function updateToggleText() {
+      switchTextEl.textContent = enabledEl.checked ? "Ativado" : "Desativado";
+    }
+
+    function updateCount(input, outputId, max) {
+      const out = $(outputId);
+      out.textContent = input.value.length + "/" + max;
+    }
+
+    function setMode(mode) {
+      state.mode = mode === "advanced" ? "advanced" : "normal";
+      document.querySelectorAll(".mode-option").forEach((button) => {
+        const active = button.dataset.mode === state.mode;
+        button.classList.toggle("active", active);
+        button.setAttribute("aria-checked", active ? "true" : "false");
+      });
+      advancedFieldsEl.classList.toggle("show", state.mode === "advanced");
+    }
+
+    function escapeHtml(value) {
+      return String(value).replace(/[&<>"']/g, (char) => ({
+        "&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;","'":"&#039;"
+      }[char]));
+    }
+
+    function normalizeConfig(data) {
+      const root = data && typeof data === "object" ? data : {};
+      const config = (root.settings && typeof root.settings === "object") ? root.settings :
+                     (root.data && typeof root.data === "object" && !Array.isArray(root.data) ? root.data : root);
+
+      return {
+        enabled: Boolean(config.enabled ?? config.leave_enabled ?? false),
+        channelId: String(config.channelId ?? config.channel_id ?? config.leave_channel_id ?? ""),
+        message: String(config.message ?? config.leave_message ?? ""),
+        mode: String(config.mode ?? config.leave_mode ?? "normal").toLowerCase() === "advanced" ? "advanced" : "normal",
+        advancedTitle: String(config.advancedTitle ?? config.advanced_title ?? config.leave_advanced_title ?? ""),
+        advancedFooter: String(config.advancedFooter ?? config.advanced_footer ?? config.leave_advanced_footer ?? "")
+      };
+    }
+
+    function extractChannels(data) {
+      if (Array.isArray(data)) return data;
+      if (data && Array.isArray(data.channels)) return data.channels;
+      if (data && Array.isArray(data.data)) return data.data;
+      if (data && data.data && Array.isArray(data.data.channels)) return data.data.channels;
+      return [];
+    }
+
+    function isTextChannel(channel) {
+      const type = channel && channel.type;
+      if (typeof type === "string") {
+        const normalized = type.toLowerCase().replace(/[_\\s-]/g, "");
+        return ["text","guildtext","textchannel","announcement","guildannouncement","news"].includes(normalized);
+      }
+      return type === 0 || type === 5 || channel?.isText === true || channel?.isTextBased === true;
+    }
+
+    function renderChannels(channels, selectedId) {
+      const textChannels = channels.filter(isTextChannel);
+      channelEl.innerHTML = "";
+      const placeholder = document.createElement("option");
+      placeholder.value = "";
+      placeholder.textContent = textChannels.length ? "Selecione um canal de texto" : "Nenhum canal de texto disponível";
+      channelEl.appendChild(placeholder);
+
+      textChannels.forEach((channel) => {
+        const option = document.createElement("option");
+        option.value = String(channel.id ?? channel.channel_id ?? "");
+        option.textContent = "# " + String(channel.name ?? "canal-sem-nome");
+        channelEl.appendChild(option);
+      });
+
+      if (selectedId) {
+        const exists = Array.from(channelEl.options).some(o => o.value === String(selectedId));
+        if (!exists) {
+          const option = document.createElement("option");
+          option.value = String(selectedId);
+          option.textContent = "Canal salvo (" + String(selectedId) + ")";
+          channelEl.appendChild(option);
+        }
+        channelEl.value = String(selectedId);
+      }
+    }
+
+    async function requestJson(url, options) {
+      const controller = new AbortController();
+      const timer = setTimeout(() => controller.abort(), 15000);
+      try {
+        const response = await fetch(url, Object.assign({}, options || {}, {
+          headers: Object.assign({ "Content-Type": "application/json", "Accept": "application/json" }, (options && options.headers) || {}),
+          signal: controller.signal
+        }));
+        const text = await response.text();
+        let data = null;
+        try { data = text ? JSON.parse(text) : null; } catch (_) { data = { raw: text }; }
+        if (!response.ok) {
+          const message = data && (data.message || data.error || data.details) ? (data.message || data.error || data.details) : "A API respondeu com erro " + response.status + ".";
+          throw new Error(typeof message === "string" ? message : "Não foi possível concluir a operação.");
+        }
+        return data;
+      } finally {
+        clearTimeout(timer);
+      }
+    }
+
+    async function loadConfiguration() {
+      if (!state.guildId) return;
+      clearStatus();
+      showStatus("loading", "Carregando configuração...");
+      reloadButton.disabled = true;
+      saveButton.disabled = true;
+
+      let savedChannelId = "";
+      let configError = null;
+
+      try {
+        const configData = await requestJson(API_BASE + "/" + encodeURIComponent(state.guildId) + "/settings/leave");
+        const config = normalizeConfig(configData);
+        enabledEl.checked = config.enabled;
+        updateToggleText();
+        messageEl.value = config.message;
+        advancedTitleEl.value = config.advancedTitle;
+        advancedFooterEl.value = config.advancedFooter;
+        setMode(config.mode);
+        updateCount(messageEl, "messageCount", 1000);
+        updateCount(advancedTitleEl, "titleCount", 256);
+        updateCount(advancedFooterEl, "footerCount", 512);
+        savedChannelId = config.channelId;
+      } catch (error) {
+        configError = error;
+        enabledEl.checked = false;
+        updateToggleText();
+        setMode("normal");
+      }
+
+      try {
+        const channelsData = await requestJson(API_BASE + "/" + encodeURIComponent(state.guildId) + "/channels");
+        renderChannels(extractChannels(channelsData), savedChannelId);
+        state.channelsLoaded = true;
+      } catch (error) {
+        state.channelsLoaded = false;
+        channelEl.innerHTML = '<option value="">Não foi possível carregar os canais</option>';
+        if (savedChannelId) {
+          const option = document.createElement("option");
+          option.value = savedChannelId;
+          option.textContent = "Canal salvo (" + savedChannelId + ")";
+          channelEl.appendChild(option);
+          channelEl.value = savedChannelId;
+        }
+      }
+
+      reloadButton.disabled = false;
+      saveButton.disabled = false;
+
+      if (configError) {
+        showStatus("error", "Não foi possível carregar a configuração: " + configError.message);
+      } else if (!state.channelsLoaded) {
+        showStatus("error", "Configuração carregada, mas não foi possível carregar os canais. Tente recarregar.");
+      } else {
+        showStatus("success", "Configuração carregada com sucesso.");
+      }
+    }
+
+    function validate() {
+      if (!DISCORD_ID_RE.test(state.guildId)) return "O ID do servidor na URL não possui um formato válido de ID Discord.";
+      if (typeof messageEl.value !== "string") return "A mensagem principal deve ser um texto.";
+      if (messageEl.value.length > 1000) return "A mensagem principal não pode ultrapassar 1000 caracteres.";
+      if (advancedTitleEl.value.length > 256) return "O título não pode ultrapassar 256 caracteres.";
+      if (advancedFooterEl.value.length > 512) return "O rodapé não pode ultrapassar 512 caracteres.";
+      if (!channelEl.value) return "Selecione um canal de saida.";
+      return null;
+    }
+
+    async function saveConfiguration() {
+      const validationError = validate();
+      if (validationError) {
+        showStatus("error", validationError);
+        return;
+      }
+
+      const original = saveButton.innerHTML;
+      saveButton.disabled = true;
+      reloadButton.disabled = true;
+      saveButton.textContent = "Salvando...";
+      showStatus("loading", "Salvando configuração de saida...");
+
+      const payload = {
+        enabled: enabledEl.checked,
+        channelId: String(channelEl.value),
+        message: messageEl.value,
+        mode: state.mode,
+        advancedTitle: state.mode === "advanced" ? advancedTitleEl.value : "",
+        advancedFooter: state.mode === "advanced" ? advancedFooterEl.value : ""
+      };
+
+      try {
+        await requestJson(API_BASE + "/" + encodeURIComponent(state.guildId) + "/settings/leave", {
+          method: "PUT",
+          body: JSON.stringify(payload)
+        });
+        showStatus("success", "Configuração de saida salva com sucesso.");
+      } catch (error) {
+        showStatus("error", "Erro ao salvar: " + error.message);
+      } finally {
+        saveButton.disabled = false;
+        reloadButton.disabled = false;
+        saveButton.innerHTML = original;
+      }
+    }
+
+    enabledEl.addEventListener("change", updateToggleText);
+    document.querySelectorAll(".mode-option").forEach(button => button.addEventListener("click", () => setMode(button.dataset.mode)));
+    messageEl.addEventListener("input", () => updateCount(messageEl, "messageCount", 1000));
+    advancedTitleEl.addEventListener("input", () => updateCount(advancedTitleEl, "titleCount", 256));
+    advancedFooterEl.addEventListener("input", () => updateCount(advancedFooterEl, "footerCount", 512));
+    reloadButton.addEventListener("click", loadConfiguration);
+    saveButton.addEventListener("click", saveConfiguration);
+
+    state.guildId = getGuildId();
+    $("backButton").href = state.guildId ? "/servidor?id=" + encodeURIComponent(state.guildId) : "/servidor";
+    $("guildNote").textContent = state.guildId ? "Servidor atual: " + state.guildId : "Nenhum ID de servidor foi encontrado na URL.";
+
+    updateToggleText();
+    updateCount(messageEl, "messageCount", 1000);
+    updateCount(advancedTitleEl, "titleCount", 256);
+    updateCount(advancedFooterEl, "footerCount", 512);
+
+    if (!DISCORD_ID_RE.test(state.guildId)) {
+      showStatus("error", "URL inválida. Abra esta página com ?guild=, ?guildId= ou ?server= seguido de um ID Discord válido.");
+      channelEl.innerHTML = '<option value="">Servidor inválido</option>';
+      saveButton.disabled = true;
+      reloadButton.disabled = true;
+      return;
+    }
+
+    loadConfiguration();
+  })();
+  </script>
+</body>
+</html>
