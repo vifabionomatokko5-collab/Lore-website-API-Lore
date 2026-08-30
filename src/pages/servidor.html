@@ -185,6 +185,10 @@
                 🤖 AutoRole
             </a>
 
+            <a class="nav-item" id="leaveNav">
+                🚪 Mensagem de saída
+            </a>
+
             <a class="nav-item">
                 🎭 Cargos
             </a>
@@ -258,6 +262,18 @@
                         Configurar
                     </button>
                 </div>
+
+                <div class="card">
+                    <h3>🚪 Mensagem de saída</h3>
+                    <p>
+                        Configure a mensagem enviada quando um membro sair do servidor.
+                    </p>
+
+                    <button class="button" id="leaveConfigButton">
+                        Configurar mensagem de saída
+                    </button>
+                </div>
+
 
                 <div class="card">
                     <h3>🛡️ Moderação</h3>
@@ -337,6 +353,10 @@
         "/pages/autorole.html?guild=" +
         encodeURIComponent(guildId);
 
+    const leaveUrl =
+        "/pages/saida.html?guild=" +
+        encodeURIComponent(guildId);
+
     const welcomeButton =
         document.getElementById("welcomeConfigButton");
 
@@ -348,6 +368,12 @@
 
     const autoroleNav =
         document.getElementById("autoroleNav");
+
+    const leaveButton =
+        document.getElementById("leaveConfigButton");
+
+    const leaveNav =
+        document.getElementById("leaveNav");
 
     if (welcomeButton) {
         welcomeButton.addEventListener("click", function () {
@@ -369,6 +395,17 @@
     if (autoroleNav) {
         autoroleNav.href = autoroleUrl;
         autoroleNav.style.cursor = "pointer";
+    }
+
+    if (leaveButton) {
+        leaveButton.addEventListener("click", function () {
+            window.location.href = leaveUrl;
+        });
+    }
+
+    if (leaveNav) {
+        leaveNav.href = leaveUrl;
+        leaveNav.style.cursor = "pointer";
     }
 })();
 </script>
