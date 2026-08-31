@@ -816,3 +816,53 @@ footer {
         font-size: 22px;
     }
 }
+
+
+/* ========================================
+   LORE — COMUNIDADE OFICIAL
+   ======================================== */
+
+.community-section {
+    margin: 32px 0;
+}
+
+.community-card {
+    position: relative;
+    overflow: hidden;
+    padding: 36px;
+    border: 1px solid rgba(255,255,255,0.10);
+    border-radius: 20px;
+    background: linear-gradient(
+        135deg,
+        rgba(88,101,242,0.16),
+        rgba(20,20,30,0.92)
+    );
+    box-shadow: 0 12px 40px rgba(0,0,0,0.20);
+}
+
+.community-card::before {
+    content: "✦";
+    position: absolute;
+    top: -30px;
+    right: 30px;
+    font-size: 140px;
+    opacity: 0.05;
+    pointer-events: none;
+}
+
+.community-card h2 {
+    margin: 8px 0 12px;
+}
+
+.community-card p:not(.eyebrow) {
+    max-width: 650px;
+    line-height: 1.7;
+    opacity: 0.82;
+    margin-bottom: 24px;
+}
+
+.community-card .button {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+}
