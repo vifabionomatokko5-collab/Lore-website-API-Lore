@@ -679,6 +679,52 @@ app.get(
     }
 );
 
+app.get("/loja", (req, res) => {
+    res.sendFile(
+        path.join(__dirname, "pages", "loja.html")
+    );
+});
+
+app.get("/api/store/products", (req, res) => {
+    try {
+        const file = path.join(
+            __dirname,
+            "data",
+            "products.json"
+        );
+
+        if (!fs.existsSync(file)) {
+            return res.status(404).json({
+                success: false,
+                message: "Arquivo de produtos não encontrado."
+            });
+        }
+
+        const data = JSON.parse(
+            fs.readFileSync(file, "utf8")
+        );
+
+        const products = Array.isArray(data.products)
+            ? data.products.filter(product => product.active)
+            : [];
+
+        res.json({
+            success: true,
+            products
+        });
+
+    } catch (error) {
+        console.error("Erro ao carregar produtos da loja:", error);
+
+        res.status(500).json({
+            success: false,
+            message: "Erro interno ao carregar a loja."
+        });
+    }
+});
+
+
+
 /*
  * ========================================
  * ERRO 404
@@ -824,6 +870,15 @@ app.use(
  * INICIAR SERVIDOR
  * ========================================
  */
+
+
+/*
+ * ========================================
+ * LOJA LORE
+ * ========================================
+ */
+
+const fs = require("fs");
 
 app.listen(
     PORT,

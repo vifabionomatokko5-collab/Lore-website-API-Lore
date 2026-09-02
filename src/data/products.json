@@ -1,0 +1,20 @@
+{
+  "products": [
+    {
+      "id": "vip",
+      "name": "VIP LORE",
+      "description": "Benefícios especiais da comunidade LORE.",
+      "price": 4.99,
+      "currency": "BRL",
+      "active": true
+    },
+    {
+      "id": "elite",
+      "name": "Elite LORE",
+      "description": "Um nível ainda mais especial de benefícios.",
+      "price": 9.99,
+      "currency": "BRL",
+      "active": true
+    }
+  ]
+}
