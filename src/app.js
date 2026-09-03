@@ -778,7 +778,9 @@ app.post("/api/store/webhook", async (req, res) => {
             req.headers["x-request-id"];
 
         const dataId =
-            req.query["data.id"] ||
+            req.query["data.id"];
+
+        const bodyDataId =
             req.body?.data?.id;
 
         if (!xSignature || !xRequestId || !dataId) {
