@@ -2,7 +2,13 @@ async function carregarProdutos() {
     const container = document.getElementById("products");
 
     try {
-        const response = await fetch("/api/store/products");
+        const response = await fetch("/api/store/products", {
+            method: "GET",
+            headers: {
+                Accept: "application/json"
+            },
+            cache: "no-store"
+        });
 
         if (!response.ok) {
             throw new Error("Erro HTTP " + response.status);
@@ -30,7 +36,7 @@ async function carregarProdutos() {
                 <h3>${escapar(product.name)}</h3>
 
                 <p>
-                    ${escapar(product.description)}
+                    ${escapar(product.description || "")}
                 </p>
 
                 <strong class="product-price">
@@ -41,13 +47,21 @@ async function carregarProdutos() {
 
                 <button
                     class="buy-button"
-                    onclick="comprar('${escaparAtributo(product.id)}')"
+                    data-product-id="${escaparAtributo(product.id)}"
                 >
                     Comprar
                 </button>
 
             </article>
         `).join("");
+
+        container
+            .querySelectorAll(".buy-button")
+            .forEach(button => {
+                button.addEventListener("click", () => {
+                    comprar(button.dataset.productId);
+                });
+            });
 
     } catch (error) {
 
@@ -64,12 +78,73 @@ async function carregarProdutos() {
     }
 }
 
-function comprar(productId) {
-    alert(
-        "Pagamento da LORE ainda está sendo configurado.\\n\\n" +
-        "Produto: " + productId
-    );
+
+async function comprar(productId) {
+    if (!productId) {
+        alert("Produto inválido.");
+        return;
+    }
+
+    const buttons =
+        document.querySelectorAll(".buy-button");
+
+    buttons.forEach(button => {
+        button.disabled = true;
+    });
+
+    try {
+        const response = await fetch(
+            "/api/store/checkout",
+            {
+                method: "POST",
+
+                headers: {
+                    "Content-Type": "application/json",
+                    "Accept": "application/json"
+                },
+
+                body: JSON.stringify({
+                    productId
+                })
+            }
+        );
+
+        const data = await response.json();
+
+        if (!response.ok || !data.success) {
+            throw new Error(
+                data.message ||
+                "Não foi possível iniciar o pagamento."
+            );
+        }
+
+        if (!data.checkout_url) {
+            throw new Error(
+                "URL de pagamento não recebida."
+            );
+        }
+
+        window.location.href =
+            data.checkout_url;
+
+    } catch (error) {
+
+        console.error(
+            "Erro ao iniciar pagamento:",
+            error
+        );
+
+        alert(
+            "Não foi possível iniciar o pagamento.\n\n" +
+            (error.message || "Tente novamente.")
+        );
+
+        buttons.forEach(button => {
+            button.disabled = false;
+        });
+    }
 }
+
 
 function escapar(value) {
     return String(value)
@@ -80,10 +155,14 @@ function escapar(value) {
         .replaceAll("'", "&#039;");
 }
 
+
 function escaparAtributo(value) {
     return String(value)
-        .replaceAll("\\", "\\\\")
-        .replaceAll("'", "\\'");
+        .replaceAll("&", "&amp;")
+        .replaceAll('"', "&quot;")
+        .replaceAll("<", "&lt;")
+        .replaceAll(">", "&gt;")
+        .replaceAll("'", "&#039;");
 }
 
 carregarProdutos();

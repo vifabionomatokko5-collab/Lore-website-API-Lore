@@ -3,6 +3,15 @@ require("dotenv").config();
 const express = require("express");
 const path = require("path");
 const session = require("express-session");
+const fs = require("fs");
+
+const {
+    MercadoPagoConfig,
+    Preference,
+    Payment,
+    WebhookSignatureValidator,
+    InvalidWebhookSignatureError
+} = require("mercadopago");
 
 const app = express();
 
@@ -19,6 +28,17 @@ const LORE_API_URL =
     "https://api-lore-bot-website.onrender.com";
 
 const API_TOKEN = process.env.API_TOKEN;
+
+const MERCADOPAGO_ACCESS_TOKEN =
+    process.env.MERCADOPAGO_ACCESS_TOKEN;
+
+const mercadoPagoClient =
+    MERCADOPAGO_ACCESS_TOKEN
+        ? new MercadoPagoConfig({
+            accessToken:
+                MERCADOPAGO_ACCESS_TOKEN
+        })
+        : null;
 
 app.disable("x-powered-by");
 
@@ -727,6 +747,165 @@ app.get("/api/store/products", (req, res) => {
 
 /*
  * ========================================
+ * LOJA LORE — CHECKOUT MERCADO PAGO
+ * ========================================
+ */
+
+
+/*
+ * ========================================
+ * LOJA LORE — WEBHOOK MERCADO PAGO
+ * ========================================
+ */
+
+app.post("/api/store/webhook", async (req, res) => {
+    try {
+        console.log(
+            "Mercado Pago webhook recebido:",
+            JSON.stringify(req.body)
+        );
+
+        /*
+         * O Mercado Pago espera uma resposta rápida.
+         * A validação/consulta do pagamento será feita
+         * antes da entrega do produto.
+         */
+
+        return res.sendStatus(200);
+
+    } catch (error) {
+        console.error(
+            "Erro no webhook Mercado Pago:",
+            error
+        );
+
+        return res.sendStatus(500);
+    }
+});
+
+app.post("/api/store/checkout", async (req, res) => {
+    try {
+        if (!mercadoPagoClient) {
+            return res.status(503).json({
+                success: false,
+                message: "Mercado Pago não está configurado."
+            });
+        }
+
+        const { productId } = req.body;
+
+        if (!productId || typeof productId !== "string") {
+            return res.status(400).json({
+                success: false,
+                message: "Produto inválido."
+            });
+        }
+
+        const file = path.join(
+            __dirname,
+            "data",
+            "products.json"
+        );
+
+        if (!fs.existsSync(file)) {
+            return res.status(500).json({
+                success: false,
+                message: "Arquivo de produtos não encontrado."
+            });
+        }
+
+        const data = JSON.parse(
+            fs.readFileSync(file, "utf8")
+        );
+
+        const product = Array.isArray(data.products)
+            ? data.products.find(
+                item =>
+                    item.id === productId &&
+                    item.active === true
+            )
+            : null;
+
+        if (!product) {
+            return res.status(404).json({
+                success: false,
+                message: "Produto não encontrado."
+            });
+        }
+
+        const price = Number(product.price);
+
+        if (!Number.isFinite(price) || price <= 0) {
+            return res.status(400).json({
+                success: false,
+                message: "Preço do produto inválido."
+            });
+        }
+
+        const preference = new Preference(
+            mercadoPagoClient
+        );
+
+        const result = await preference.create({
+            body: {
+                items: [
+                    {
+                        id: String(product.id),
+                        title: String(product.name),
+                        description: String(
+                            product.description || ""
+                        ),
+                        quantity: 1,
+                        currency_id:
+                            product.currency || "BRL",
+                        unit_price: price
+                    }
+                ],
+
+                back_urls: {
+                    success:
+                        "https://lore-website-api-lore.onrender.com/loja?payment=success",
+                    failure:
+                        "https://lore-website-api-lore.onrender.com/loja?payment=failure",
+                    pending:
+                        "https://lore-website-api-lore.onrender.com/loja?payment=pending"
+                },
+
+                auto_return: "approved",
+
+                external_reference:
+                    `lore_${product.id}_${req.session.user.id}_${Date.now()}`
+            }
+        });
+
+        if (!result || !result.init_point) {
+            throw new Error(
+                "Mercado Pago não retornou init_point."
+            );
+        }
+
+        return res.json({
+            success: true,
+            checkout_url: result.init_point
+        });
+
+    } catch (error) {
+        console.error(
+            "Erro ao criar checkout Mercado Pago:",
+            error
+        );
+
+        return res.status(500).json({
+            success: false,
+            message:
+                "Não foi possível criar o pagamento."
+        });
+    }
+});
+
+
+/*
+ * ========================================
  * ERRO 404
  * ========================================
  */
@@ -877,8 +1056,6 @@ app.use(
  * LOJA LORE
  * ========================================
  */
-
-const fs = require("fs");
 
 app.listen(
     PORT,
