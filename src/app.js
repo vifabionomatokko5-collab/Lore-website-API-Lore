@@ -778,7 +778,8 @@ app.post("/api/store/webhook", async (req, res) => {
             req.headers["x-request-id"];
 
         const dataId =
-            req.query["data.id"];
+            req.query["data.id"] ||
+            req.body?.data?.id;
 
         if (!xSignature || !xRequestId || !dataId) {
             console.warn(
@@ -817,6 +818,68 @@ app.post("/api/store/webhook", async (req, res) => {
                 action: req.body?.action,
                 dataId
             }
+        );
+
+        if (req.body?.type !== "payment") {
+            console.log(
+                "Webhook Mercado Pago: evento ignorado.",
+                req.body?.type
+            );
+
+            return res.sendStatus(200);
+        }
+
+        if (!mercadoPagoClient) {
+            console.error(
+                "Mercado Pago: cliente não configurado."
+            );
+
+            return res.sendStatus(503);
+        }
+
+        const payment = new Payment(
+            mercadoPagoClient
+        );
+
+        const pagamento =
+            await payment.get({
+                id: String(dataId)
+            });
+
+        console.log(
+            "Pagamento Mercado Pago consultado:",
+            {
+                id: pagamento?.id,
+                status: pagamento?.status,
+                status_detail:
+                    pagamento?.status_detail,
+                transaction_amount:
+                    pagamento?.transaction_amount,
+                external_reference:
+                    pagamento?.external_reference
+            }
+        );
+
+        if (!pagamento) {
+            console.error(
+                "Mercado Pago: pagamento não encontrado."
+            );
+
+            return res.sendStatus(404);
+        }
+
+        if (pagamento.status !== "approved") {
+            console.log(
+                "Pagamento ainda não aprovado:",
+                pagamento.status
+            );
+
+            return res.sendStatus(200);
+        }
+
+        console.log(
+            "PAGAMENTO APROVADO:",
+            pagamento.id
         );
 
         return res.sendStatus(200);
