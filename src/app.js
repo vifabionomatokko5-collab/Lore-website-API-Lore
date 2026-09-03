@@ -794,6 +794,13 @@ app.post("/api/store/checkout", async (req, res) => {
 
         const { productId } = req.body;
 
+        if (!req.session.user || !req.session.user.id) {
+            return res.status(401).json({
+                success: false,
+                message: "Você precisa entrar com o Discord para comprar."
+            });
+        }
+
         if (!productId || typeof productId !== "string") {
             return res.status(400).json({
                 success: false,
