@@ -760,16 +760,64 @@ app.get("/api/store/products", (req, res) => {
 
 app.post("/api/store/webhook", async (req, res) => {
     try {
-        console.log(
-            "Mercado Pago webhook recebido:",
-            JSON.stringify(req.body)
-        );
+        const secret =
+            process.env.MERCADOPAGO_WEBHOOK_SECRET;
 
-        /*
-         * O Mercado Pago espera uma resposta rápida.
-         * A validação/consulta do pagamento será feita
-         * antes da entrega do produto.
-         */
+        if (!secret) {
+            console.error(
+                "Webhook Mercado Pago: secret não configurado."
+            );
+
+            return res.sendStatus(503);
+        }
+
+        const xSignature =
+            req.headers["x-signature"];
+
+        const xRequestId =
+            req.headers["x-request-id"];
+
+        const dataId =
+            req.query["data.id"];
+
+        if (!xSignature || !xRequestId || !dataId) {
+            console.warn(
+                "Webhook Mercado Pago: dados de assinatura ausentes."
+            );
+
+            return res.sendStatus(400);
+        }
+
+        try {
+            WebhookSignatureValidator.validate({
+                xSignature,
+                xRequestId,
+                dataId,
+                secret
+            });
+        } catch (error) {
+            if (
+                error instanceof
+                InvalidWebhookSignatureError
+            ) {
+                console.warn(
+                    "Webhook Mercado Pago: assinatura inválida."
+                );
+
+                return res.sendStatus(401);
+            }
+
+            throw error;
+        }
+
+        console.log(
+            "Webhook Mercado Pago: assinatura válida.",
+            {
+                type: req.body?.type,
+                action: req.body?.action,
+                dataId
+            }
+        );
 
         return res.sendStatus(200);
 
