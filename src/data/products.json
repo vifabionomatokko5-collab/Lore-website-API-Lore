@@ -1,20 +1,28 @@
 {
-  "products": [
-    {
-      "id": "vip",
-      "name": "VIP LORE",
-      "description": "Benefícios especiais da comunidade LORE.",
-      "price": 4.99,
-      "currency": "BRL",
-      "active": true
-    },
-    {
-      "id": "elite",
-      "name": "Elite LORE",
-      "description": "Um nível ainda mais especial de benefícios.",
-      "price": 9.99,
-      "currency": "BRL",
-      "active": true
-    }
-  ]
+    "products": [
+        {
+            "id": "vip",
+            "name": "VIP LORE",
+            "description": "Benefícios especiais da comunidade LORE.",
+            "price": 4.99,
+            "currency": "BRL",
+            "active": true
+        },
+        {
+            "id": "elite",
+            "name": "Elite LORE",
+            "description": "Um nível ainda mais especial de benefícios.",
+            "price": 9.99,
+            "currency": "BRL",
+            "active": true
+        },
+        {
+            "id": "teste",
+            "name": "🧪 TESTE — LORE",
+            "description": "Produto temporário para testar o checkout Mercado Pago.",
+            "price": 0.01,
+            "currency": "BRL",
+            "active": true
+        }
+    ]
 }
